@@ -7,18 +7,30 @@ router.get("/", function (req, res, next) {
   return res.json("");
 });
 
-//sign up page
-router.post("/:id", async function (req, res, next) {
+router.post("/logorsign/:id", async function (req, res, next) {
   const obj = await subsBL.findSub(req.params.id);
+  let authorized = false;
+  let message = "";
+  let firstFriday = "";
 
-  return res.json({ authorized: obj ? obj.paid : false });
+  if (obj) {
+    if (obj.paid) {
+      authorized = true;
+      firstFriday = obj.firstFriday;
+    } else {
+      message = "אנא הסדירו את התשלום כדי שתוכלו להשתמש באתר!";
+    }
+  } else {
+    await subsBL.saveSub(req.params.id);
+    message =
+      "ברגעים אלה נשלח אליכם מייל להסדר התשלום ורק לאחר מכן תוכלו להשתמש באתר";
+  }
+
+  return res.json({ authorized, message, firstFriday });
 });
 
-//login in page
-router.post("/:id", async function (req, res, next) {
-  const obj = await subsBL.findSub(req.params.id);
-
-  return res.json({ authorized: obj ? obj.paid : false });
+router.post("/updatedate", async function (req, res, next) {
+  await subsBL.updateSub(req.body);
 });
 
 module.exports = router;
