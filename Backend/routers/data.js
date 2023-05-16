@@ -11,14 +11,14 @@ router.get("/", function (req, res, next) {
 router.post("/:id", async function (req, res, next) {
   const obj = await subsBL.findSub(req.params.id);
 
-  return res.json({authorized: obj? obj.paid : false});
+  return res.json({ authorized: obj ? obj.paid : false });
 });
 
 //login in page
 router.post("/:id", async function (req, res, next) {
   const obj = await subsBL.findSub(req.params.id);
 
-  return res.json({authorized: obj? obj.paid : false});
+  return res.json({ authorized: obj ? obj.paid : false });
 });
 
 module.exports = router;

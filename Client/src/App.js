@@ -1,18 +1,20 @@
-import './App.css';
-import {useEffect} from 'react';
-import axios from 'axios';
+import "./App.css";
+import { useEffect } from "react";
+import axios from "axios";
 
 export default function App() {
-  useEffect(()=>{
-    const getData= async()=>{
+  useEffect(() => {
+    const getData = async () => {
       let id = "ramybachayev3@gmail.com    ";
 
-      const resp = await axios.post(`${process.env.REACT_APP_API_SERVER}/${id}`);
+      const resp = await axios.post(
+        `${process.env.REACT_APP_API_SERVER}/${id}`
+      );
       console.log(resp.data);
-    }
+    };
 
     getData();
-  },[])
+  }, []);
 
   return (
     <div>
