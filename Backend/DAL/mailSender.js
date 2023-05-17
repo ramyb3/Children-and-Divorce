@@ -36,7 +36,7 @@ exports.sendMail = async function (email) {
   const message = {
     from: process.env.MAIL,
     to: email,
-    subject: "המשך תהליך רישום לאתר ",
+    subject: "https://children-and-divorce.netlify.app המשך תהליך רישום לאתר ",
     html: mail,
   };
 
