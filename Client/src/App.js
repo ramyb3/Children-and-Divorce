@@ -21,7 +21,7 @@ export default function App() {
 
     try {
       const resp = await axios.post(
-        `${process.env.REACT_APP_API_SERVER}/logorsign/${email}`
+        `${process.env.REACT_APP_API_SERVER}logorsign/${email}`
       );
 
       if (!resp.data.authorized) {
@@ -115,7 +115,7 @@ function DateCalc({ data }) {
     setLoading(true);
 
     try {
-      await axios.post(`${process.env.REACT_APP_API_SERVER}/updatedate`, {
+      await axios.post(`${process.env.REACT_APP_API_SERVER}updatedate`, {
         email: data.email,
         date,
       });
