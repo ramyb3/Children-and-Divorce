@@ -43,7 +43,7 @@ export default function App() {
     <>
       <Dialog open={open} fullScreen>
         <h1>הילדים איתי או עם הגרוש/ה בסופ"ש?</h1>
-        <div className="flex dialog" style={{ marginTop: "20%" }}>
+        <div className="flex dialog" style={{ marginTop: "10%" }}>
           <input
             value={email}
             placeholder="נא להזין אימייל"
@@ -157,7 +157,9 @@ function DateCalc({ data }) {
           {hebrewEvents.hebrew && (
             <>
               <span>{hebrewEvents.hebrew}</span>
-              <span>אירועים באותו תאריך:</span>
+              <span style={{ textDecoration: "underline" }}>
+                אירועים באותו תאריך:
+              </span>
             </>
           )}
 
