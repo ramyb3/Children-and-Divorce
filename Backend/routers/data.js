@@ -38,6 +38,7 @@ router.post("/logorsign/:id", async function (req, res, next) {
 
 router.post("/updatedate", async function (req, res, next) {
   await subsBL.updateSub(req.body);
+  return res.json("");
 });
 
 module.exports = router;
