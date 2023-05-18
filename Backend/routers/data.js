@@ -8,19 +8,20 @@ router.get("/", function (req, res, next) {
   return res.json("");
 });
 
-router.post("/logorsign/:id", async function (req, res, next) {
-  const obj = await subsBL.findSub(req.params.id);
-  const verification = Math.floor(100000 + Math.random() * 900000);
+router.post("/logorsign", async function (req, res, next) {
+  const obj = await subsBL.findSub(req.body.email);
+  const verification =
+    obj?.verification || Math.floor(100000 + Math.random() * 900000);
   let message = "";
 
   if (!obj?.authorized) {
-    const mailRes = await mail.sendMail(req.params.id, verification);
+    const mailRes = await mail.sendMail(req.body.email, verification);
 
     if (!mailRes) {
       message = "חלה שגיאה ברישום, אנא נסו שוב";
     } else {
       if (!obj) {
-        await subsBL.saveSub(req.params.id);
+        await subsBL.saveSub(req.body.email, verification);
       }
 
       message =
@@ -32,13 +33,18 @@ router.post("/logorsign/:id", async function (req, res, next) {
     authorized: obj?.authorized,
     message,
     firstFriday: obj?.firstFriday || "",
-    verification,
   });
 });
 
 router.post("/completesign", async function (req, res, next) {
-  await subsBL.signUp(req.body.email);
-  return res.json("");
+  const obj = await subsBL.findSub(req.body.email);
+
+  if (obj.verification === req.body.num) {
+    await subsBL.signUp(req.body.email);
+    return res.status(200).json("");
+  } else {
+    return res.status(500).json("קוד האימות שגוי!");
+  }
 });
 
 router.post("/updatedate", async function (req, res, next) {

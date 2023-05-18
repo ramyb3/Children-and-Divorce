@@ -9,7 +9,7 @@ export default function App() {
   const [open, setOpen] = useState(true);
   const [loading, setLoading] = useState(false);
   const [authorized, setAuthorized] = useState(false);
-  const [verification, setVerification] = useState(null);
+  const [verification, setVerification] = useState(false);
   const [num, setNum] = useState("");
   const [firstFriday, setFirstFriday] = useState("");
   const [email, setEmail] = useState("");
@@ -42,16 +42,17 @@ export default function App() {
 
     try {
       const resp = await axios.post(
-        `${process.env.REACT_APP_API_SERVER}logorsign/${email}`
+        `${process.env.REACT_APP_API_SERVER}logorsign`,
+        { email }
       );
 
       if (!resp.data.authorized) {
-        setVerification(resp.data.verification);
+        setVerification(true);
         alert(resp.data.message);
 
         await sendMail(`First Sign: ${email}`);
       } else {
-        setVerification(null);
+        setVerification(false);
         setAuthorized(true);
         setFirstFriday(resp.data.firstFriday);
         setOpen(false);
@@ -69,23 +70,20 @@ export default function App() {
   const checkVerification = async () => {
     setLoading(true);
 
-    if (num === verification) {
-      try {
-        await axios.post(`${process.env.REACT_APP_API_SERVER}completesign`, {
-          email,
-        });
+    try {
+      await axios.post(`${process.env.REACT_APP_API_SERVER}completesign`, {
+        email,
+        num,
+      });
 
-        setVerification(null);
-        setAuthorized(true);
-        setOpen(false);
+      setVerification(false);
+      setAuthorized(true);
+      setOpen(false);
 
-        await sendMail(`Complete Sign Up: ${email}`);
-      } catch (e) {
-        console.error(e);
-      }
-    } else {
-      alert("קוד האימות שגוי!");
+      await sendMail(`Complete Sign Up: ${email}`);
+    } catch (e) {
       setNum("");
+      alert(e.response.data);
     }
 
     setLoading(false);

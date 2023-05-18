@@ -12,10 +12,11 @@ const findSub = function (email) {
   });
 };
 
-const saveSub = async function (email) {
+const saveSub = async function (email, verification) {
   return new Promise((resolve, reject) => {
     const subs = new SubsModel({
       email,
+      verification,
       authorized: false,
       firstFriday: "",
     });
@@ -36,6 +37,7 @@ const signUp = async function (email) {
       { email },
       {
         authorized: true,
+        verification: null,
       },
       function (err, data) {
         if (err) {
