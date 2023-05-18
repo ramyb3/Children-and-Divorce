@@ -1,7 +1,7 @@
 const nodeMailer = require("nodemailer");
 const Mailgen = require("mailgen");
 
-exports.sendMail = async function (email) {
+exports.sendMail = async function (data, verification) {
   const transporter = nodeMailer.createTransport({
     service: "gmail",
     auth: {
@@ -15,7 +15,7 @@ exports.sendMail = async function (email) {
     product: {
       name: "Mailgen",
       link: "https://mailgen.js/",
-      textDirection: "rtl",
+      textDirection: verification ? "rtl" : "ltr",
     },
   });
 
@@ -23,11 +23,9 @@ exports.sendMail = async function (email) {
     body: {
       greeting: false,
       signature: false,
-      intro: `<div dir="rtl">
-        לקבלת גישה לאתר אנא העבירו 5₪ למספר 0543079496 דרך אפליקציית bit עם כתובת המייל,<br/>
-        רק לאחר קבלת התשלום תהיה לכם גישה לאתר.<br/><br/>
-        לכל בעיה/הצעה אנא שלחו מייל חוזר ואגיב בהקדם.
-      </div>`
+      intro: verification
+        ? `<div dir="rtl">קוד אימות לאתר ${verification}</div>`
+        : `<div>${data.mailData}</div>`,
     },
   };
 
@@ -35,8 +33,10 @@ exports.sendMail = async function (email) {
 
   const message = {
     from: process.env.MAIL,
-    to: email,
-    subject: "https://children-and-divorce.netlify.app המשך תהליך רישום לאתר ",
+    to: verification ? data : process.env.MAIL,
+    subject: verification
+      ? "https://children-and-divorce.netlify.app המשך תהליך רישום לאתר"
+      : data.text,
     html: mail,
   };
 

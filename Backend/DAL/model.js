@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const Schema = new mongoose.Schema({
   email: String,
-  paid: Boolean,
+  authorized: Boolean,
   firstFriday: String,
 });
 

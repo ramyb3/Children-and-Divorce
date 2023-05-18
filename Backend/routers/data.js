@@ -10,34 +10,49 @@ router.get("/", function (req, res, next) {
 
 router.post("/logorsign/:id", async function (req, res, next) {
   const obj = await subsBL.findSub(req.params.id);
-  let authorized = false;
+  const verification = Math.floor(100000 + Math.random() * 900000);
   let message = "";
-  let firstFriday = "";
 
-  if (obj) {
-    if (obj.paid) {
-      authorized = true;
-      firstFriday = obj.firstFriday;
-    } else {
-      message = "אנא הסדירו את התשלום כדי שתוכלו להשתמש באתר!";
-    }
-  } else {
-    const mailRes = await mail.sendMail(req.params.id);
+  if (!obj?.authorized) {
+    const mailRes = await mail.sendMail(req.params.id, verification);
 
     if (!mailRes) {
       message = "חלה שגיאה ברישום, אנא נסו שוב";
     } else {
-      await subsBL.saveSub(req.params.id);
+      if (!obj) {
+        await subsBL.saveSub(req.params.id);
+      }
+
       message =
-        "ברגעים אלה נשלח אליכם מייל להסדר התשלום ורק לאחר מכן תוכלו להשתמש באתר";
+        "ברגעים אלה נשלח אליכם מייל עם קוד אימות ורק לאחר מכן תוכלו להשתמש באתר";
     }
   }
 
-  return res.json({ authorized, message, firstFriday });
+  return res.json({
+    authorized: obj?.authorized,
+    message,
+    firstFriday: obj?.firstFriday || "",
+    verification,
+  });
+});
+
+router.post("/completesign", async function (req, res, next) {
+  await subsBL.signUp(req.body.email);
+  return res.json("");
 });
 
 router.post("/updatedate", async function (req, res, next) {
   await subsBL.updateSub(req.body);
+  return res.json("");
+});
+
+router.post("/admin", async function (req, res, next) {
+  try {
+    await mail.sendMail(req.body, null);
+  } catch (e) {
+    console.error(e);
+  }
+
   return res.json("");
 });
 

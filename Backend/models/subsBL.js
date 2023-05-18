@@ -16,7 +16,7 @@ const saveSub = async function (email) {
   return new Promise((resolve, reject) => {
     const subs = new SubsModel({
       email,
-      paid: false,
+      authorized: false,
       firstFriday: "",
     });
 
@@ -27,6 +27,24 @@ const saveSub = async function (email) {
     });
 
     resolve(subs);
+  });
+};
+
+const signUp = async function (email) {
+  return new Promise((resolve, reject) => {
+    SubsModel.findOneAndUpdate(
+      { email },
+      {
+        authorized: true,
+      },
+      function (err, data) {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(data);
+        }
+      }
+    );
   });
 };
 
@@ -48,4 +66,4 @@ const updateSub = async function (obj) {
   });
 };
 
-module.exports = { findSub, saveSub, updateSub };
+module.exports = { findSub, saveSub, signUp, updateSub };
