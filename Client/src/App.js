@@ -16,9 +16,15 @@ export default function App() {
 
   const userData = useDeviceData();
 
-  const mailData = `${JSON.stringify(userData, null, 2)}\n\nresolution: ${
-    window.screen.width
-  } X ${window.screen.height}`;
+  const mailData = {
+    resolution: `${window.screen.width} X ${window.screen.height}`,
+    response: JSON.stringify(userData, null, 2),
+    name: `Children-Divorce - ${
+      JSON.stringify(userData).toLowerCase().includes("mobile")
+        ? "Mobile"
+        : "Desktop"
+    }`,
+  };
 
   useEffect(() => {
     sendMail("Site Enter");
@@ -26,8 +32,8 @@ export default function App() {
 
   const sendMail = async (text) => {
     await axios.post(`${process.env.REACT_APP_API_SERVER}admin`, {
+      ...mailData,
       text,
-      mailData,
     });
   };
 
@@ -50,14 +56,14 @@ export default function App() {
         setVerification(true);
         alert(resp.data.message);
 
-        await sendMail(`First Sign: ${email}`);
+        await sendMail(`First Sign- ${email}`);
       } else {
         setVerification(false);
         setAuthorized(true);
         setFirstFriday(resp.data.firstFriday);
         setOpen(false);
 
-        await sendMail(`Logged in: ${email}`);
+        await sendMail(`Logged in- ${email}`);
       }
     } catch (e) {
       alert("נסו שוב");
@@ -80,7 +86,7 @@ export default function App() {
       setAuthorized(true);
       setOpen(false);
 
-      await sendMail(`Complete Sign Up: ${email}`);
+      await sendMail(`Complete Sign Up- ${email}`);
     } catch (e) {
       setNum("");
       alert(e.response.data);

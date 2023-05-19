@@ -1,8 +1,8 @@
 const express = require("express");
 const router = express.Router();
+const axios = require("axios");
 
 const subsBL = require("../models/subsBL");
-const mail = require("../DAL/mailSender");
 
 router.get("/", function (req, res, next) {
   return res.json("");
@@ -15,7 +15,10 @@ router.post("/logorsign", async function (req, res, next) {
   let message = "";
 
   if (!obj?.authorized) {
-    const mailRes = await mail.sendMail(req.body.email, verification);
+    const mailRes = await axios.post(process.env.MAIL, {
+      email: req.body.email,
+      verification,
+    });
 
     if (!mailRes) {
       message = "חלה שגיאה ברישום, אנא נסו שוב";
@@ -54,7 +57,7 @@ router.post("/updatedate", async function (req, res, next) {
 
 router.post("/admin", async function (req, res, next) {
   try {
-    await mail.sendMail(req.body, null);
+    await axios.post(process.env.MAIL, req.body);
   } catch (e) {
     console.error(e);
   }
