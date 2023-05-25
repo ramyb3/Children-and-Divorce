@@ -18,6 +18,7 @@ router.post("/logorsign", async function (req, res, next) {
     const mailRes = await axios.post(process.env.MAIL, {
       email: req.body.email,
       verification,
+      site: process.env.SITE,
     });
 
     if (!mailRes) {
