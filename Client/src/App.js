@@ -19,11 +19,7 @@ export default function App() {
   const mailData = {
     resolution: `${window.screen.width} X ${window.screen.height}`,
     response: JSON.stringify(userData, null, 2),
-    name: `Children-Divorce - ${
-      JSON.stringify(userData).toLowerCase().includes("mobile")
-        ? "Mobile"
-        : "Desktop"
-    }`,
+    name: "Children-Divorce",
   };
 
   useEffect(() => {
